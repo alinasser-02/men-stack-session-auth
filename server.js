@@ -4,7 +4,7 @@ const app = express();
 const methodOverride = require('method-override')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-
+const session = require('express-session')
 
 const port = process.env.PORT ? process.env.PORT : "3000";
 // if (process.env.PORT) {
@@ -25,14 +25,19 @@ mongoose.connection.on('connected', ()=>{
 app.use(express.urlencoded({extended:false}))
 app.use(methodOverride('_method'))
 app.use(morgan('dev'))
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
 
+}))
 
 app.get('/',(req,res)=>{
 
-  res.render('index.ejs',{title: 'My App'})
+  res.render('index.ejs',{title: 'My App', user: req.session.user})
 })
 
-const authController =require('./controllers/auth')
+const authController =require('./controllers/authController')
 
 // ROUTES
 app.use('/auth', authController)

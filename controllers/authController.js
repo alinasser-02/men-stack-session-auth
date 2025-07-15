@@ -49,6 +49,13 @@ router.post("/sign-in", async (req, res) => {
     return res.send("Login failed. please try again.");
   }
   const validPassword = bcrypt.compareSync(req.body.password , userInDatabase.password)
+  if(!validPassword){
+    return res.send('login failed, please try again.')
+  }
+  req.session.user = {
+    username: userInDatabase.username,
+    _id: userInDatabase._id
+  }
 });
 
 module.exports = router;
