@@ -1,0 +1,12 @@
+body{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  max-width: 600px;
+}
+.container{
+  text-align: center;
+  align-items: center;
+ margin: 10px,auto;
+ /* max-width: 300px */
+}

@@ -32,6 +32,10 @@ app.get('/',(req,res)=>{
   res.render('index.ejs',{title: 'My App'})
 })
 
+const authController =require('./controllers/auth')
+
+// ROUTES
+app.use('/auth', authController)
 app.listen(port,()=>{
 console.log(`the express app is ready on port${port}`)
 
