@@ -33,7 +33,13 @@ router.post("/sign-up", async (req, res) => {
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
   req.body.password = hashedPassword;
   const newUser = await User.create(req.body);
-  res.send(`thanks for signing up ${newUser.username}`);
+  req.session.user = {
+    username: newUser.username,
+    _id: newUser._id,
+  };
+  req.session.save(() => {
+    res.redirect("/");
+  });
 });
 
 //SIGN VIEW
@@ -44,18 +50,41 @@ router.get("/sign-in", (req, res) => {
 // POST TO SIGN THE USER IN (CREATE THE SESSION)
 router.post("/sign-in", async (req, res) => {
   const userInDatabase = await User.findOne({ username: req.body.username });
-  // if user in database is null (user exists) then send this message
+  // if user in database is null (user do not exists) then send this message
   if (!userInDatabase) {
     return res.send("Login failed. please try again.");
   }
-  const validPassword = bcrypt.compareSync(req.body.password , userInDatabase.password)
-  if(!validPassword){
-    return res.send('login failed, please try again.')
+  const validPassword = bcrypt.compareSync(
+    req.body.password,
+    userInDatabase.password
+  );
+  if (!validPassword) {
+    return res.send("login failed, please try again.");
   }
   req.session.user = {
     username: userInDatabase.username,
-    _id: userInDatabase._id
-  }
+    _id: userInDatabase._id,
+  };
+  req.session.save(()=>{
+  res.redirect('/')
+
+  })
 });
 
+router.post("/", async (req, res) => {
+  req.session.user = {
+    username: userInDatabase.username,
+    _id: userInDatabase._id,
+  };
+  req.session.save(() => {
+    res.redirect("/");
+  });
+});
+
+// SIGN OUT VIEW
+router.get("/sign-out", (req, res) => {
+  req.session.destroy(() => {
+    res.redirect("/");
+  });
+});
 module.exports = router;

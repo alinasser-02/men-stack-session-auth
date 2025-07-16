@@ -10,3 +10,6 @@ body{
  margin: 10px,auto;
  /* max-width: 300px */
 }
+a{
+  font-weight: bold;
+}
